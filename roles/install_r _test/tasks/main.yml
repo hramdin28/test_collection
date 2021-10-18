@@ -1,0 +1,7 @@
+- name: debug install_r_rpm_file 
+  debug:
+    var: install_r_rpm_file
+    
+- name: debug install_r_rpm_url 
+  debug:
+    var: install_r_rpm_url    

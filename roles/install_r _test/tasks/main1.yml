@@ -1,0 +1,58 @@
+- name: Install dnf plugins core
+  dnf:
+    name: dnf-plugins-core
+    state: present
+
+- name: Get the R rpm
+  get_url:
+    url: "{{ install_r_rpm_url }}"
+    dest: "/root/{{ install_r_rpm_file }}"
+    validate_certs: no
+    owner: root
+    group: root
+    mode: '0770' 
+  
+- name: Install R
+  dnf:
+    name: /root/{{ install_r_rpm_file }}
+    disable_gpg_check: yes
+    state: present
+
+- name: Make symbolic link /usr/local/bin/R
+  file:
+    src: /opt/R/{{ install_r_version }}/bin/R
+    dest: /usr/local/bin/R
+    state: link
+  notify:
+    - Restart rstudio-server  
+
+- name: Make symbolic link /usr/local/bin/Rscript
+  file:
+    src: /opt/R/{{ install_r_version }}/bin/Rscript
+    dest: /usr/local/bin/Rscript
+    state: link
+
+- name: Copy Rprofile.site
+  copy:
+    src: files/Rprofile.site
+    dest: /opt/R/{{ install_r_version }}/lib/R/etc/Rprofile.site
+
+### These 2 changes were added to prevent use of /tmp
+### With hardening this is not possible anymore to execute files 
+### like configure in minicran installation process
+- name: "Create /opt/tmp directory"
+  file:
+    group: root
+    mode: '0755'
+    owner: root
+    path: /opt/tmp
+    state: directory
+
+- name: "Add TMP lines in Renviron file"
+  blockinfile:
+    dest: /opt/R/{{ install_r_version }}/lib/R/etc/Renviron
+    marker: "# {mark} ANSIBLE MANAGED BLOCK addtmplines"
+    block: |
+      TMPDIR="/opt/tmp"
+      TMP="/opt/tmp"
+      TEMP="/opt/tmp"

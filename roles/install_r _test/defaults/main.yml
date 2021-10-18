@@ -1,0 +1,3 @@
+install_r_version: "3.6.3"
+install_r_rpm_file: "R-{{ install_r_version }}-1-1.x86_64.rpm"
+install_r_rpm_url: "https://cdn.rstudio.com/r/centos-8/pkgs/{{ install_r_rpm_file }}"

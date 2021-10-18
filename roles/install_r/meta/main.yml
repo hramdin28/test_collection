@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Open
+  description: "Role to install R on a linux machine"
+  license: MIT
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: Redhat
+      versions:
+        - 8
+
+  galaxy_tags:
+    - development
+    - r
+
+dependencies: []
